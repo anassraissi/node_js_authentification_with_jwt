@@ -1,7 +1,20 @@
 const express=require('express')
 const jwt=require('jsonwebtoken')
+const loginRoute=require('./routes/LoginRoute')
+var cookieParser = require('cookie-parser')
+const verifyTokenn=require('./Middelware/CheckJwt')
 
 const app=express();
+app.set('view engine', 'ejs');
+app.use(cookieParser())
+
+
+
+const bodyParser = require('body-parser')
+
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
 
 app.get('/',(req,res)=>{
         res.json({
@@ -73,5 +86,24 @@ function verifyToken(req,res,next){
             res.sendStatus(403)  // forbidden
         }
 }
+
+// jwt by form
+
+
+    app.get('/login',(req,res)=>{ 
+
+        res.render('login')
+    })
+    app.get('/wellcome',(req,res)=>{ 
+
+        res.render('wellcome')
+    })
+
+    app.post('/login',loginRoute);
+    
+    app.post('/add',verifyTokenn);
+
+    // app.post(/login)
+
 
 app.listen(5000,()=>console.log('Server started on port 5000'))
